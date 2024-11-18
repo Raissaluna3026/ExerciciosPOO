@@ -19,6 +19,11 @@ public class Funcionario
         this.departamento = departamento;
         this.salario = salario;
     }
+    public Funcionario(String nome)
+    {
+        this(nome, null, null, null, 0);
+        //this.nome = nome;
+    }
     
     public String getNome() {
         return this.nome;

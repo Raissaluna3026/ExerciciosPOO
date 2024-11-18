@@ -14,10 +14,16 @@ public class Pessoal
         this.nomeGerente = nomeGerente;
         this.funcionarios = new ArrayList<Funcionario>();
     }
+
     public void adicionarFuncionario(String nome, String funcao, String matricula, String departamento, double salario){
         Funcionario funcionario = new Funcionario(nome, funcao, matricula, departamento, salario);
         this.funcionarios.add(funcionario);
         System.out.println("Funcionario adicionado!");
+    }
+    public void demitirFuncionario(String nome){
+        Funcionario funcionario = new Funcionario(nome);
+        this.funcionarios.remove(funcionario);
+        System.out.println("Funcionario removido!");
     }
 
     public void exibirDados() {
