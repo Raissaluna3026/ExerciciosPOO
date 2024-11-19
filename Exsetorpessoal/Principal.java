@@ -121,6 +121,15 @@ public class Principal {
       scanner.close();
   }
   public static void listarFolha(Pessoal setorPessoal){
-    
+    double somaSalarios = 0.0;
+    System.out.println("\n--- Lista de Funcionários ---");
+    for (Funcionario func : setorPessoal.getFuncionarios()) {
+        String nome = func.getNome();
+        double salario = func.getSalario();
+        System.out.println("Nome: " + nome + " - Salário: " + salario);
+        somaSalarios += salario;
+    }
+    System.out.println("\nSalário Total: R$" + somaSalarios);
   }
+  
 }

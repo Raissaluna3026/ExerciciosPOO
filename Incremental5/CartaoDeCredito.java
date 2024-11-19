@@ -4,7 +4,7 @@ import java.util.List;
 
 class CartaoDeCredito {
     private String nomeTitular;
-    private int numero;
+    private String numero;
     private float limite;
     private float saldo;
     private float taxaCashback;
@@ -14,7 +14,7 @@ class CartaoDeCredito {
     private ArrayList<Transacao> historicoTransacoes;
     
 
-    public CartaoDeCredito(String nomeTitular, int numero, float limite, Fatura fatura) {
+    public CartaoDeCredito(String nomeTitular, String numero, float limite, Fatura fatura) {
         this.nomeTitular = nomeTitular;
         this.numero = numero;
         this.limite = limite;
@@ -25,7 +25,7 @@ class CartaoDeCredito {
         this.historicoTransacoes = new ArrayList<>();
     }
 
-    public CartaoDeCredito(String nomeTitular, int numero, float limite, float taxaCashback, Fatura fatura) {
+    public CartaoDeCredito(String nomeTitular, String numero, float limite, float taxaCashback, Fatura fatura) {
         this(nomeTitular, numero, limite, fatura);
         this.taxaCashback = taxaCashback;
     }
@@ -34,7 +34,7 @@ class CartaoDeCredito {
         return nomeTitular;
     }
 
-    public int getNumero() {
+    public String getNumero() {
         return numero;
     }
 
