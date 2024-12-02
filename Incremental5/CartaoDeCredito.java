@@ -1,141 +1,126 @@
 import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-class CartaoDeCredito {
+public class CartaoDeCredito
+{
+    private int numero;
     private String nomeTitular;
-    private String numero;
-    private float limite;
-    private float saldo;
-    private float taxaCashback;
-    private Fatura fatura;
-    private Transacao transacaoAtual;
+    private double limite;
+    private double saldo;
+    private double fatura;
+    private ArrayList<Transacao> transacoes;
+    private double cashbackPercentual;
     private boolean ativo;
-    private ArrayList<Transacao> historicoTransacoes;
     
-
-    public CartaoDeCredito(String nomeTitular, String numero, float limite, Fatura fatura) {
-        this.nomeTitular = nomeTitular;
+    //construtor basico
+    public CartaoDeCredito(int numero, String nomeTitular, double limite)
+    {
         this.numero = numero;
+        this.nomeTitular = nomeTitular;
         this.limite = limite;
-        this.saldo = 0;
-        this.taxaCashback = 0.0f;
-        this.fatura = fatura;
-        this.ativo = true;      
-        this.historicoTransacoes = new ArrayList<>();
+        this.saldo = 0.0;
+        this.fatura = 0.0;
+        this.cashbackPercentual = 0.0;
+        this.transacoes = new ArrayList<>();
+        this.ativo = true;
     }
-
-    public CartaoDeCredito(String nomeTitular, String numero, float limite, float taxaCashback, Fatura fatura) {
-        this(nomeTitular, numero, limite, fatura);
-        this.taxaCashback = taxaCashback;
+    //construtor com cashback
+    public CartaoDeCredito(int numero, String nomeTitular, double limite, double cashbackPercentual)
+    {
+        this.numero = numero;
+        this.nomeTitular = nomeTitular;
+        this.limite = limite;
+        this.cashbackPercentual = cashbackPercentual;
+        this.saldo = 0.0;
+        this.fatura = 0.0;
+        this.transacoes = new ArrayList<>();
+        this.ativo = true; 
+        
+        System.out.println("Cashback configurado: " + this.cashbackPercentual);
     }
-
-    public String getNomeTitular() {
-        return nomeTitular;
+    
+    public double getLimite(){
+        return this.limite;
     }
-
-    public String getNumero() {
-        return numero;
+    public int getNumero(){
+        return this.numero;
     }
-
-    public float getLimite() {
-        return limite;
-    }
-
-    public float getSaldo() {
-        return saldo;
-    }
-
-    public Fatura getFatura() {
-        return fatura;
-    }
-
-    public void realizarCompraBasica(float valor) {
-        if (!ativo) {
-            System.out.println("Cartão inativo. Transação não permitida.");
-            return;
-        }
-
-        if (transacaoAtual == null) {
-            if (saldo + valor <= limite) {
-                transacaoAtual = new Transacao(new Date(), valor, "Compra básica", "compra");
-                saldo += valor;
-                fatura.adicionarTransacao(transacaoAtual);
-                historicoTransacoes.add(transacaoAtual);
-                System.out.println("Compra básica de R$" + valor + " realizada com sucesso.");
-            } else {
-                System.out.println("Compra não autorizada! Limite insuficiente.");
-            }
-        } else {
-            System.out.println("Já existe uma transação ativa. Finalize-a antes de iniciar uma nova.");
-        }
-    }
-
-    public void realizarCompraComCashback(float valor) {
-        if (!ativo) {
-            System.out.println("Cartão inativo. Transação não permitida.");
-            return;
-        }
-
-        if (transacaoAtual == null) {
-            if (saldo + valor <= limite) {
-                float cashback = valor * taxaCashback;
-                transacaoAtual = new Transacao(new Date(), valor - cashback, "Compra com cashback", "compra");
-                saldo += valor - cashback;
-                fatura.adicionarTransacao(transacaoAtual);
-                historicoTransacoes.add(transacaoAtual);
-                System.out.println("Compra com cashback de R$" + valor + " realizada com sucesso. Cashback aplicado: R$" + cashback);
-            } else {
-                System.out.println("Compra não autorizada! Limite insuficiente.");
-            }
-        } else {
-            System.out.println("Já existe uma transação ativa. Finalize-a antes de iniciar uma nova.");
-        }
-    }
-
-    public void finalizarTransacao() {
-        if (transacaoAtual != null) {
-            transacaoAtual = null;
-            System.out.println("Transação finalizada.");
-        } else {
-            System.out.println("Não há transação ativa para finalizar.");
-        }
-    }
-
-    public void desativarCartao() {
+    
+    public void desativar() {
         ativo = false;
-        transacaoAtual = null;
-        fatura.limparFatura();
-        historicoTransacoes.clear();
-        System.out.println("Cartão desativado e todas as transações removidas.");
+        transacoes.clear();
     }
-
-    public List<Transacao> getHistoricoTransacoes() {
-        return historicoTransacoes;
+    
+    public boolean fazerCompras(double valorCompra, String descricao){
+        if(!ativo) {
+            System.out.println("Cartão desativado");
+            return false;
+        }
+        if((fatura + valorCompra) <= limite){
+            fatura = fatura + valorCompra;
+            Transacao novaT = new Transacao("Compra realizada", descricao, valorCompra);
+            transacoes.add(novaT);
+            System.out.println("Compra registrada: " + descricao + " - Valor: " + valorCompra);
+            return true;
+        }else{
+            System.out.println("Compra recusada: limite insuficiente.");
+            return false;
+        }
     }
-
-    public List<Transacao> filtrarTransacoesPorTipo(String tipo) {
-        List<Transacao> resultado = new ArrayList<>();
-        for (Transacao transacao : historicoTransacoes) {
-            if (transacao.getTipo().equals(tipo)) {
-                resultado.add(transacao);
+    public boolean realizarCompraComCashback(double valorCompra, String descricao) {
+        if(!ativo){
+            System.out.println("Cartão desativado");
+            return false;
+        }
+        if ((fatura + valorCompra) <= limite) {
+            double cashback = valorCompra * (cashbackPercentual / 100);
+            fatura += valorCompra - cashback;
+            Transacao novaT = new Transacao("Compra com cashback", descricao, valorCompra);
+            transacoes.add(novaT);
+            System.out.println("Compra com cashback registrada: " + descricao + " - Valor: " + valorCompra + " - Cashback: " + cashback);
+            return true;
+        } else {
+            System.out.println("Compra com cashback recusada: limite insuficiente.");
+            return false;
+        }
+    }
+    
+    public void relatrioTransacoes(){
+        System.out.println("=== Relatório de Transações ===");
+        if(transacoes.isEmpty()){
+            System.out.println("Nenhuma transação realizada");
+        } else{
+            for (Transacao transacao : transacoes){
+                System.out.println(transacao);
+            }
+        }
+    }
+    public void gerarRelatorioFatura() {
+        System.out.println("=== Relatório da Fatura ===");
+        relatrioTransacoes(); 
+        System.out.println("Total da fatura: R$ " + fatura);
+        System.out.println("===========================");
+    }
+    public ArrayList<Transacao> consultarHistorico(){
+        return transacoes;
+    }
+    public ArrayList<Transacao> consultarHistoricoPorData(Date dataInicio, Date dataFim){
+        ArrayList<Transacao> resultado = new ArrayList<>();
+        for (Transacao transa : transacoes){
+            if(!transa.getData().before(dataInicio) && !transa.getData().after(dataFim)){
+                resultado.add(transa);
+            }
+        }
+        return resultado; // Retorna as transações filtradas por data
+    }
+    public ArrayList<Transacao> consultarHistoricoPorTipo(String tipo){
+        ArrayList<Transacao> resultado = new ArrayList<>();
+        for(Transacao transa : transacoes){
+            if(transa.getTipo().equals(tipo)){
+                resultado.add(transa);
             }
         }
         return resultado;
-    }
-
-    public List<Transacao> filtrarTransacoesPorPeriodo(Date dataInicio, Date dataFim) {
-        List<Transacao> resultado = new ArrayList<>();
-        for (Transacao transacao : historicoTransacoes) {
-            Date dataTransacao = transacao.getData();
-            if (!dataTransacao.before(dataInicio) && !dataTransacao.after(dataFim)) {
-                resultado.add(transacao);
-            }
-        }
-        return resultado;
-    }
-
-    public void adicionarTransacao(Transacao transacao) {
-        historicoTransacoes.add(transacao);
     }
 }

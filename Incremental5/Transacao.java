@@ -1,37 +1,35 @@
-
 import java.util.Date;
 
-
-class Transacao {
-    private Date data;
-    private float valor;
-    private String descricao;
+public class Transacao
+{
     private String tipo;
-
-    public Transacao(Date data, float valor, String descricao, String tipo) {
-        this.data = data;
-        this.valor = valor;
-        this.descricao = descricao;
+    private String descricao;
+    private double valor;
+    private Date data;
+    
+    public Transacao(String tipo, String descricao, double valor)
+    {
         this.tipo = tipo;
+        this.descricao = descricao;
+        this.valor = valor;
+        this.data = new Date();
     }
-
-    public Date getData() {
-        return data;
-    }
-
-    public float getValor() {
-        return valor;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public String getTipo() {
+    public String getTipo(){
         return tipo;
     }
-
-    public void detalhesDaTransacao() {
-        System.out.println("Data: " + data + ", Valor: " + valor + ", Descrição: " + descricao + ", Tipo: " + tipo);
+    public double getValor(){
+        return valor;
     }
-}
+    public Date getData(){
+        return data;
+    }
+    @Override
+    public String toString() {
+        return "Transacao{" +
+                "tipo='" + tipo + '\'' +
+                ", descricao='" + descricao + '\'' +
+                ", valor=" + valor +
+                ", data=" + data +
+                '}';
+    }
+}   
