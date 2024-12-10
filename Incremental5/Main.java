@@ -1,183 +1,109 @@
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        // Criar o cliente
-        System.out.print("Digite o nome do cliente: ");
+
+        System.out.println("Digite o nome do projeto:");
+        String nome = scanner.nextLine();
+
+        System.out.println("Digite o nome do cliente:");
         String nomeCliente = scanner.nextLine();
 
-        System.out.print("Digite o CPF do cliente: ");
-        String cpfCliente = scanner.nextLine();
+        System.out.println("Digite o valor da hora de trabalho:");
+        double horaTrabalho = scanner.nextDouble();
 
-        Cliente cliente = new Cliente(nomeCliente, cpfCliente);
+        System.out.println("Digite o número máximo de tarefas permitido:");
+        int qtdMaxTarefa = scanner.nextInt();
+        scanner.nextLine(); // Limpar o buffer
 
-        boolean executar = true;
+        Projeto projeto = new Projeto(nome, nomeCliente, horaTrabalho, qtdMaxTarefa);
+        System.out.println("Projeto criado com sucesso!");
 
-        while (executar) {
-            System.out.println("\n===== Menu de Opções =====");
-            System.out.println("1. Adicionar Cartão");
-            System.out.println("2. Realizar Compra");
-            System.out.println("3. Realizar Compra com Cashback");
-            System.out.println("4. Consultar Histórico de Transações");
-            System.out.println("5. Consultar Histórico por Tipo");
-            System.out.println("6. Consultar Histórico por Intervalo de Datas");
-            System.out.println("7. Exibir Relatório de Fatura");
-            System.out.println("8. Remover Cartão");
+        boolean running = true;
+
+        while (running) {
+            System.out.println("\nEscolha uma opção:");
+            System.out.println("1. Adicionar uma tarefa completa");
+            System.out.println("2. Adicionar uma tarefa com descrição");
+            System.out.println("3. Registrar horas em uma tarefa");
+            System.out.println("4. Finalizar uma tarefa");
+            System.out.println("5. Verificar se o projeto está finalizado");
+            System.out.println("6. Calcular o valor total do projeto");
+            System.out.println("7. Exibir total de horas trabalhadas");
+            System.out.println("8. Exibir informações do projeto");
             System.out.println("9. Sair");
-            System.out.print("Escolha uma opção: ");
 
             int opcao = scanner.nextInt();
-            scanner.nextLine(); // Consumir a nova linha após o número
+            scanner.nextLine(); // Limpar o buffer
 
             switch (opcao) {
-                case 1: // Adicionar Cartão
-                    System.out.print("Número do cartão: ");
-                    int numero = scanner.nextInt();
-                    scanner.nextLine(); // Consumir nova linha
+                case 1 -> {
+                    System.out.println("Digite a descrição da tarefa:");
+                    String descricao = scanner.nextLine().trim();
 
-                    System.out.print("Limite do cartão: ");
-                    double limite = scanner.nextDouble();
+                    System.out.println("Digite o nome do executor:");
+                    String nomeExecutor = scanner.nextLine();
 
-                    System.out.print("Taxa de cashback (0 para nenhum): ");
-                    double cashbackPercentual = scanner.nextDouble();
+                    System.out.println("Digite as horas gastas inicialmente (ou 0):");
+                    double horasGastas = scanner.nextDouble();
+                    scanner.nextLine(); // Limpar o buffer
 
-                    if (cashbackPercentual > 0) {
-                        cliente.adicionarCartao(new CartaoDeCredito(numero, nomeCliente, limite, cashbackPercentual));
+                    System.out.println("Digite o status inicial (iniciada/delegada):");
+                    String status = scanner.nextLine();
+
+                    projeto.adicionarTarefa(descricao, nomeExecutor, horasGastas, status);
+                
+                }
+                case 2 -> {
+                    System.out.println("Digite a descrição da tarefa:");
+                    String descricao = scanner.nextLine().trim();
+                    projeto.adicionarTarefa(descricao);
+                }
+                case 3 -> {
+                    System.out.println("Digite a descrição da tarefa para registrar horas:");
+                    String descricao  = scanner.nextLine();
+
+                    System.out.println("Digite o número de horas a registrar:");
+                    double horas = scanner.nextDouble();
+                    scanner.nextLine(); // Consumir quebra de linha
+
+                    projeto.registrarHorasTarefa(descricao, horas);
+                }
+                case 4 -> {
+                    System.out.println("Digite a descrição da tarefa a ser finalizada:");
+                    String descricao = scanner.nextLine();
+
+                    System.out.println("Digite as horas gastas para finalizar a tarefa:");
+                    double horasGastas = scanner.nextDouble();
+                    scanner.nextLine(); // Limpar o buffer
+
+                    projeto.finalizarTarefa(descricao, horasGastas);
+                }
+                case 5 -> {
+                    boolean finalizado = projeto.estaFinalizada();
+                    if (finalizado) {
+                        System.out.println("O projeto está completamente finalizado!");
                     } else {
-                        cliente.adicionarCartao(new CartaoDeCredito(numero, nomeCliente, limite));
+                        System.out.println("O projeto ainda não está finalizado.");
                     }
-                    break;
-
-                case 2: // Realizar Compra
-                    System.out.print("Número do cartão: ");
-                    int numeroCompra = scanner.nextInt();
-                    scanner.nextLine(); // Consumir nova linha
-
-                    CartaoDeCredito cartaoCompra = cliente.buscarCartao(numeroCompra);
-                    if (cartaoCompra == null) {
-                        System.out.println("Cartão não encontrado.");
-                        break;
-                    }
-
-                    System.out.print("Descrição da compra: ");
-                    String descricaoCompra = scanner.nextLine();
-
-                    System.out.print("Valor da compra: ");
-                    double valorCompra = scanner.nextDouble();
-
-                    cartaoCompra.fazerCompras(valorCompra, descricaoCompra);
-                    break;
-
-                case 3: // Realizar Compra com Cashback
-                    System.out.print("Número do cartão: ");
-                    int numeroCashback = scanner.nextInt();
-                    scanner.nextLine(); // Consumir nova linha
-
-                    CartaoDeCredito cartaoCashback = cliente.buscarCartao(numeroCashback);
-                    if (cartaoCashback == null) {
-                        System.out.println("Cartão não encontrado.");
-                        break;
-                    }
-
-                    System.out.print("Descrição da compra: ");
-                    String descricaoCashback = scanner.nextLine();
-
-                    System.out.print("Valor da compra: ");
-                    double valorCashback = scanner.nextDouble();
-
-                    cartaoCashback.realizarCompraComCashback(valorCashback, descricaoCashback);
-                    break;
-
-                case 4: // Consultar Histórico de Transações
-                    System.out.print("Número do cartão: ");
-                    int numeroHistorico = scanner.nextInt();
-
-                    CartaoDeCredito cartaoHistorico = cliente.buscarCartao(numeroHistorico);
-                    if (cartaoHistorico == null) {
-                        System.out.println("Cartão não encontrado.");
-                        break;
-                    }
-
-                    cartaoHistorico.relatrioTransacoes();
-                    break;
-
-                case 5: // Consultar Histórico por Tipo
-                    System.out.print("Número do cartão: ");
-                    int numeroTipo = scanner.nextInt();
-                    scanner.nextLine(); // Consumir nova linha
-
-                    CartaoDeCredito cartaoTipo = cliente.buscarCartao(numeroTipo);
-                    if (cartaoTipo == null) {
-                        System.out.println("Cartão não encontrado.");
-                        break;
-                    }
-
-                    System.out.print("Informe o tipo de transação (Ex: Compra, Pagamento): ");
-                    String tipo = scanner.nextLine();
-
-                    ArrayList<Transacao> historicoTipo = cartaoTipo.consultarHistoricoPorTipo(tipo);
-                    for (Transacao transacao : historicoTipo) {
-                        System.out.println(transacao);
-                    }
-                    break;
-
-                case 6: // Consultar Histórico por Intervalo de Datas
-                    System.out.print("Número do cartão: ");
-                    int numeroData = scanner.nextInt();
-                    scanner.nextLine(); // Consumir nova linha
-
-                    CartaoDeCredito cartaoData = cliente.buscarCartao(numeroData);
-                    if (cartaoData == null) {
-                        System.out.println("Cartão não encontrado.");
-                        break;
-                    }
-
-                    System.out.print("Data início (yyyy-MM-dd): ");
-                    String dataInicioStr = scanner.nextLine();
-                
-                    System.out.print("Data fim (yyyy-MM-dd): ");
-                    String dataFimStr = scanner.nextLine();
-                
-                    // Converter String para Date
-                    Date dataInicio = new Date(dataInicioStr);
-                    Date dataFim = new Date(dataFimStr);
-                    
-                    ArrayList<Transacao> historicoData = cartaoData.consultarHistoricoPorData(dataInicio, dataFim);
-                    for (Transacao transacao : historicoData) {
-                        System.out.println(transacao);
-                    }
-                    break;
-
-                case 7: // Exibir Relatório de Fatura
-                    System.out.print("Número do cartão: ");
-                    int numeroFatura = scanner.nextInt();
-
-                    CartaoDeCredito cartaoFatura = cliente.buscarCartao(numeroFatura);
-                    if (cartaoFatura == null) {
-                        System.out.println("Cartão não encontrado.");
-                        break;
-                    }
-
-                    cartaoFatura.gerarRelatorioFatura();
-                    break;
-
-                case 8: // Remover Cartão
-                    System.out.print("Número do cartão: ");
-                    int numeroRemover = scanner.nextInt();
-
-                    cliente.removerCartao(numeroRemover);
-                    break;
-
-                case 9: // Sair
-                    executar = false;
-                    System.out.println("Saindo do sistema...");
-                    break;
-
-                default:
-                    System.out.println("Opção inválida. Tente novamente.");
+                }
+                case 6 -> {
+                    double valorTotal = projeto.valorTotalProjeto();
+                    System.out.println("O valor total do projeto é: R$" + valorTotal);
+                }
+                case 7 -> {
+                    double totalHoras = projeto.calculoHoraDeTrabalho();
+                    System.out.println("O total de horas trabalhadas no projeto é: " + totalHoras);
+                }
+                case 8 -> {
+                    projeto.exibirProjeto();
+                }
+                case 9 -> {
+                    running = false;
+                    System.out.println("Encerrando o programa...");
+                }
+                default -> System.out.println("Opção inválida! Tente novamente.");
             }
         }
 
