@@ -1,4 +1,4 @@
-package UFBA.POO.Github.ExerciciosPOO.SegundaUnidade.Exercicio2.Exercicio2;
+package SegundaUnidade.Exercicio2;
 
 public class Chefe extends Funcionarios{
     private double bonus;

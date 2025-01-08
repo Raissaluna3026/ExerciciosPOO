@@ -1,4 +1,4 @@
-package UFBA.POO.Github.ExerciciosPOO.SegundaUnidade.Exercicio2.Exercicio2;
+package SegundaUnidade.Exercicio2;
 
 
 
@@ -24,10 +24,7 @@ public class Empresa {
     public void addFuncionario(Funcionarios funcionario) {
         this.funcionarios.add(funcionario);
     }
-    @Override
-    public String toString() {
-        return "CNPJ: " + this.cnpj + "\nRazão Social: " + this.razaoSocial + "\nFuncionários: " + this.funcionarios;
-    }
+    
     //ou assim
     public void listarFuncionarios() {
         System.out.println("Funcionarios da empresa " + this.razaoSocial + ":");
