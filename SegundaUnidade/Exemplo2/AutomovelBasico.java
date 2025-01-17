@@ -21,7 +21,7 @@ public class AutomovelBasico extends Automovel{
         return multmidia;
     }
     public AutomovelBasico (String m, String c, byte comb)
-        { super(m,c,comb);
+    { super(m,c,comb);
         this.quintaMarcha = true;
         this.limpadorDoVidroTraseiro =true;
         this.multmidia =true;
