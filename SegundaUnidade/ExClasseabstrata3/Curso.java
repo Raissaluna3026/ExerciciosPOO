@@ -1,16 +1,18 @@
 package ExClasseabstrata3;
 
-public class Curso {
-    private String codigo;
-    private String nome;
-    private String area;
-    private int numeroVagas;
+abstract class Curso {
+    protected String codigo;
+    protected String nome;
+    protected String area;
+    protected int numeroVagas;
+    protected double taxaMatricula;
 
-    public Curso(String codigo, String nome, String area, int numeroVagas){
+    public Curso(String codigo, String nome, String area, int numeroVagas, double taxaMatricula){
         this.codigo = codigo;
         this.nome = nome;
         this.area = area;
         this.numeroVagas = numeroVagas;
+        this.taxaMatricula = taxaMatricula;
     }
 
     public String getCodigo(){
@@ -28,4 +30,7 @@ public class Curso {
     public int getNumeroVagas(){
         return numeroVagas;
     }
+    public abstract double calcularPrecoComDesconto();
+
+    public abstract String consultarInformacoes();
 }
