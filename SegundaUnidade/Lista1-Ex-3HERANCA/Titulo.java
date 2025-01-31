@@ -1,35 +1,38 @@
 
-public class Titulo {
+
+public abstract class Titulo
+{
+    
     private String nome;
-    private String autorPrincipal;
     private String editora;
     private float preco;
 
-    public Titulo(String nome, String autorPrincipal, String editora, float preco) {
+    
+    public Titulo(String nome, String editora, float preco)
+    {
         this.nome = nome;
-        this.autorPrincipal = autorPrincipal;
         this.editora = editora;
         this.preco = preco;
     }
 
-    public String getEditora(){
-        return this.editora;
-    }
     public String getNome(){
         return this.nome;
     }
-    public String getAutorPrincipal(){
-        return this.autorPrincipal;
+    public String getEditora(){
+        return this.editora;
     }
     public float getPreco(){
         return this.preco;
     }
-    public float calcularImposto(){
-        return 0.0f;
+    
+    public String toString(){
+        return "Nome: " + nome + "\nEditora: " + editora + "\nPreço: R$" +
+        preco;
     }
-    public float calcularDesconto(float precoBase) {
-        return 0.0f; 
-    }
+    public abstract float calcularImposto();
+    
+    public abstract float calcularDesconto(float precoB);
+    
     public float calcularPrecoFinal(boolean temCartaoVIP){
         float precoBase = this.preco + this.calcularImposto();
         float desconto = 0.0f;
@@ -38,16 +41,7 @@ public class Titulo {
             desconto = this.calcularDesconto(precoBase);
         }
         return precoBase - desconto;
-    }
-
-
-
-    public String toString() {
-    return "Título: " + this.nome + 
-           "\nAutor Principal: " + this.autorPrincipal + 
-           "\nEditora: " + this.editora + 
-           "\nPreço: R$ " + this.preco;
-    }
-
-
+    };
+    
+    
 }
